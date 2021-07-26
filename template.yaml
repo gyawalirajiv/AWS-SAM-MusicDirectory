@@ -7,33 +7,98 @@ Description: >
 
 Globals:
   Function:
+    Runtime: java8
     Timeout: 20
+    MemorySize: 512
+    Environment:
+      Variables:
+        ARTISTS_TABLE: !Ref ArtistsTable
 
 Resources:
-  MusicDirectoryFunction:
+  ArtistsTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: id
+        Type: String
+  CreateArtistFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: MusicDirectoryFunction
-      Handler: musicDirectory.App::handleRequest
-      Runtime: java8
-      MemorySize: 512
-      Environment:
-        Variables:
-          PARAM1: VALUE
+      Handler: musicDirectory.ArtistResource::create
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ArtistsTable
       Events:
         MusicDirectory:
           Type: Api
           Properties:
-            Path: /hello
-            Method: get
+            Path: /artist
+            Method: POST
+  GetAllArtistFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: MusicDirectoryFunction
+      Handler: musicDirectory.ArtistResource::getAll
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref ArtistsTable
+      Events:
+        MusicDirectory:
+          Type: Api
+          Properties:
+            Path: /artist
+            Method: GET
+  GetArtistFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: MusicDirectoryFunction
+      Handler: musicDirectory.ArtistResource::get
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref ArtistsTable
+      Events:
+        MusicDirectory:
+          Type: Api
+          Properties:
+            Path: /artist/{id}
+            Method: GET
+  UpdateArtistFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: MusicDirectoryFunction
+      Handler: musicDirectory.ArtistResource::update
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ArtistsTable
+      Events:
+        MusicDirectory:
+          Type: Api
+          Properties:
+            Path: /artist/{id}
+            Method: PUT
+  DeleteArtistFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: MusicDirectoryFunction
+      Handler: musicDirectory.ArtistResource::delete
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ArtistsTable
+      Events:
+        MusicDirectory:
+          Type: Api
+          Properties:
+            Path: /artist/{id}
+            Method: DELETE
 
 Outputs:
   HelloWorldApi:
     Description: "API Gateway endpoint URL for Prod stage for MusicDirectory function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
-  MusicDirectoryFunction:
-    Description: "MusicDirectoryFunction Lambda ARN"
-    Value: !GetAtt MusicDirectoryFunction.Arn
-  MusicDirectoryFunctionIamRole:
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/artist/"
+  CreateArtistFunction:
+    Description: "CreateArtistFunction Lambda ARN"
+    Value: !GetAtt CreateArtistFunction.Arn
+  CreateArtistFunctionIamRole:
     Description: "Implicit IAM Role created for MusicDirectory function"
-    Value: !GetAtt MusicDirectoryFunctionRole.Arn
+    Value: !GetAtt CreateArtistFunctionRole.Arn
