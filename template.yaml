@@ -25,7 +25,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: MusicDirectoryFunction
-      Handler: musicDirectory.ArtistResource::create
+      Handler: musicDirectory.functions.CreateArtistFunction::create
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ArtistsTable
@@ -39,7 +39,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: MusicDirectoryFunction
-      Handler: musicDirectory.ArtistResource::getAll
+      Handler: musicDirectory.functions.GetAllArtistsFunction::getAll
       Policies:
         - DynamoDBReadPolicy:
             TableName: !Ref ArtistsTable
@@ -53,7 +53,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: MusicDirectoryFunction
-      Handler: musicDirectory.ArtistResource::get
+      Handler: musicDirectory.functions.GetArtistFunction::get
       Policies:
         - DynamoDBReadPolicy:
             TableName: !Ref ArtistsTable
@@ -67,7 +67,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: MusicDirectoryFunction
-      Handler: musicDirectory.ArtistResource::update
+      Handler: musicDirectory.functions.UpdateArtistFunction::update
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ArtistsTable
@@ -81,7 +81,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: MusicDirectoryFunction
-      Handler: musicDirectory.ArtistResource::delete
+      Handler: musicDirectory.functions.DeleteArtistFunction::delete
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ArtistsTable
